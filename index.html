@@ -1,0 +1,343 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"> </script>
+	<script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
+		<meta charset = "utf-8">
+		<title>
+		Climate Action Collabration System
+		</title>
+    <style>
+	</style>
+	</head>
+  <body>
+
+<div>
+    <a href="">
+        <div>
+            <p><b>history</b></p>
+        </div>
+    </a>
+    <a href="">
+        <div>
+            <p>iniate project</p>
+        </div>
+    </a>
+    <a href="">
+        <div>
+            <p>Join Discussion</p>
+        </div>
+    </a>
+    <a href="">
+        <div>
+            <p>manage project</p>
+        </div>
+    </a>
+    
+    <a href="">
+        <div>
+            <p>manage funding</p>
+        </div>
+    </a>
+    
+    <a href="">
+        <div>
+            <p>manage team</p>
+        </div>
+    </a>
+    <a href="">
+        <div>
+            <p>track budget</p>
+        </div>
+    </a>
+    <a href="">
+        <div>
+            <p>interact</p>
+        </div>
+    </a>
+    
+    <a href="">
+        <div>
+            <p>log out</p>
+        </div>
+    </a>
+<div class="bg"></div>
+        <div class="bg bg2"></div>
+        <div class="bg bg3"></div>
+
+
+
+        <div class="websitestyle">
+         <div class="headingformat">
+           <div class="movingMarquee">
+             <div class="textformat">
+             <marquee style="font-size:90% loop=:1">
+               <b>Our mission is to create a
+platform that fosters
+collaboration, inspires
+innovation, and empowers
+Individuals and oragnization
+to take meaningful steps
+toward a more sustainablee
+future. </b>
+             </marquee>
+             <br>
+             </div>
+           </div>
+           <br>
+
+           <h1>Climate Action Collabration System</h1>
+
+		   <div >
+
+		   <div class="mySlides fade">
+		     <div class="numbertext">1 / 3</div>
+		     <img src="Pictures/i1.jpg" style="width:100%">
+
+		   </div>
+
+		   <div >
+		     <div class="numbertext">2 / 3</div>
+		     <img src="Pictures/i2.jpg" style="width:100%">
+
+		   </div>
+
+		   <div class="mySlides fade">
+		     <div class="numbertext">3 / 3</div>
+		     <img src="Pictures/i3.jpg" style="width:100%">
+
+		   </div>
+
+		   </div>
+		   <br>
+
+		   <div >
+		     <span class="dot"></span>
+		     <span class="dot"></span>
+		     <span class="dot"></span>
+</div>
+
+<h2> Our Journey Towards Sustainable Collaboration </h2><br><br><br>
+
+<p>Welcome to a platform born out of a shared vision for a sustainable future. The Climate Action Collaboration System was conceived in 2023 by a group of passionate individuals determined to make a meaningful impact in the fight against climate change. Frustrated by the fragmented efforts in addressing environmental challenges, we envisioned a platform that could unite diverse stakeholders, fostering collaboration and innovation.
+Our platform is set evolve into a dynamic hub where stakeholders from various backgrounds, industries, and regions converge to drive climate action. 
+
+Today, we stand as a testament to the power of collective action. Together, we've facilitated groundbreaking projects, shared invaluable knowledge, and forged lasting partnerships. Join us in our mission to create a sustainable future. The journey continues, and your contribution matters.</p><br><br><br><br><br>
+
+<h2> Search for projects </h2> <br><br>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search projects...">
+        <button id="searchButton" onclick="searchProjects()">Search</button>
+        <button id="refreshButton" onclick="refreshResults()">Clear</button>
+    </div>
+
+    <!-- Display search results here -->
+    <div ></div>
+
+    <script>
+        // Open a WebSQL database
+        var db = openDatabase('myDatabase', '1.0', 'My Database', 2 * 1024 * 1024);
+
+        // Create table if not exists and insert data
+        db.transaction(function(tx) {
+            tx.executeSql('CREATE TABLE IF NOT EXISTS projects (id INTEGER PRIMARY KEY, name TEXT NOT NULL, status TEXT NOT NULL)');
+
+            // Check if data is already inserted
+            tx.executeSql('SELECT * FROM projects', [], function(tx, results) {
+                if (results.rows.length === 0) {
+                    // Insert data if the table is empty
+                    tx.executeSql('INSERT INTO projects (name, status) VALUES (?, ?)', ['Renewable Energy Initiative', 'In Progress']);
+                    tx.executeSql('INSERT INTO projects (name, status) VALUES (?, ?)', ['Tree Planting Campaign', 'Not Started']);
+                    tx.executeSql('INSERT INTO projects (name, status) VALUES (?, ?)', ['Carbon Footprint Reduction', 'Completed']);
+                    tx.executeSql('INSERT INTO projects (name, status) VALUES (?, ?)', ['Climate Education Program', 'In Progress']);
+                    tx.executeSql('INSERT INTO projects (name, status) VALUES (?, ?)', ['Green Transportation Project', 'Not Started']);
+                }
+            });
+        });
+
+        var projects = [];
+
+        function searchProjects() {
+            var query = document.getElementById('searchInput').value;
+
+            // Execute the SQL query
+            db.transaction(function(tx) {
+                tx.executeSql('SELECT * FROM projects', [], function(tx, results) {
+                    projects = Array.from(results.rows);
+                    displayResults(query);
+                });
+            });
+        }
+
+        function displayResults(query) {
+            var resultsContainer = document.getElementById('resultsContainer');
+            var fuse = new Fuse(projects, { keys: ['name'] });
+            var result = fuse.search(query);
+
+            if (result.length > 0) {
+                var tableHtml = "<table><tr><th>ID</th><th>Project Name</th><th>Status</th></tr>";
+
+                for (var i = 0; i < result.length; i++) {
+                    var project = result[i].item;
+                    tableHtml += "<tr><td>" + project.id + "</td><td>" + project.name + "</td><td>" + project.status + "</td></tr>";
+                }
+
+                tableHtml += "</table>";
+                resultsContainer.innerHTML = tableHtml;
+            } else {
+                resultsContainer.innerHTML = "No results found";
+            }
+        }
+
+        function refreshResults() {
+            var resultsContainer = document.getElementById('resultsContainer');
+            resultsContainer.innerHTML = ''; // Clear the results
+        }
+    </script>
+	
+
+
+
+
+
+
+
+	<footer>
+	 					<div class="content">
+	 					    
+	 					     <div class="right box">
+
+	 					           <div class="lower">
+	 							   <div class="topic">Contact us</div>
+	 							   <div class="email">
+	 							  <h1>contact-us@gmail.com</h1>
+	 							    </div>
+	 					       </div>
+	 					         </div>
+	 					    
+	 					     </div>
+</footer>
+
+    <script>
+        // Simulated SQLite data (replace this with server-side logic)
+        var users = [
+            { email: 'user1@example.com', password: 'password1' },
+            { email: 'user2@example.com', password: 'password2' },
+            // ... add more users as needed
+        ];
+
+        function showLoginPopup() {
+            document.getElementById('loginPopup').style.display = 'block';
+        }
+
+        function closeLoginPopup() {
+            document.getElementById('loginPopup').style.display = 'none';
+        }
+
+        function checkLogin() {
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+
+            // Simulated check (replace this with server-side logic)
+            var user = users.find(u => u.email === email && u.password === password);
+
+            if (user) {
+                // Redirect to the initiate.html page
+                window.location.href = 'initiate.html';
+            } else {
+                alert('Invalid email or password. Please try again.');
+            }
+        }
+    </script>
+
+<script>
+	let slideIndex = 0;
+	showSlides();
+
+	function showSlides() {
+ 		 let i;
+ 		 let slides = document.getElementsByClassName("mySlides");
+ 		 let dots = document.getElementsByClassName("dot");
+ 	 for (i = 0; i < slides.length; i++)
+ 	 {
+   			 slides[i].style.display = "none";
+	  }
+  		slideIndex++;
+  if (slideIndex > slides.length) {slideIndex = 1}
+  for (i = 0; i < dots.length; i++) {
+    dots[i].className = dots[i].className.replace(" active", "");
+  }
+  slides[slideIndex-1].style.display = "block";
+  dots[slideIndex-1].className += " active";
+  setTimeout(showSlides, 2000);
+}
+
+
+
+$(document).ready(function(){
+
+  $("a").on('click', function(event) {
+
+
+    if (this.hash !== "") {
+
+      event.preventDefault();
+
+
+      var hash = this.hash;
+
+
+
+      $('html, body').animate({
+        scrollTop: $(hash).offset().top
+      }, 800, function(){
+
+
+        window.location.hash = hash;
+      });
+    }
+  });
+});
+
+
+
+
+$(document).ready(function(){
+
+  $("a").on('click', function(event) {
+
+
+    if (this.hash !== "") {
+
+      event.preventDefault();
+
+      var hash = this.hash;
+
+ scroll
+
+      $('html, body').animate({
+        scrollTop: $(hash).offset().top
+      }, 800, function(){
+
+
+        window.location.hash = hash;
+      });
+    }
+  });
+});
+</script>
+
+
+
+	</body>
+</html>
+
+
+
+
+
+
+
